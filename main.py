@@ -1,20 +1,21 @@
 import sys
 import sqlite3
 
-from PyQt5 import uic
+from release.mainForm import Ui_MainWindow
+from release.addEditCoffeeForm import Ui_AddWindow
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtWidgets import QTableWidgetItem
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('main.ui', self)
+        self.setupUi(self)
 
         self.add_btn.clicked.connect(self.add)
         self.edit_btn.clicked.connect(self.edit)
 
-        self.con = sqlite3.connect('coffee.sqlite')
+        self.con = sqlite3.connect('release/data/coffee.sqlite')
         self.load_table()
 
     def load_table(self):
@@ -65,12 +66,12 @@ class MainWindow(QMainWindow):
             print(r)
 
 
-class AddWidget(QMainWindow):
+class AddWidget(QMainWindow, Ui_AddWindow):
     def __init__(self, parent=None, coffee_id=None):
         super().__init__(parent)
-        uic.loadUi('addEditCoffeeForm.ui', self)
+        self.setupUi(self)
 
-        self.con = sqlite3.connect('coffee.sqlite')
+        self.con = sqlite3.connect('release/data/coffee.sqlite')
         self.roast_degrees = dict(self.con.cursor().execute('SELECT roast_degree, id FROM RoastDegrees').fetchall())
         self.types = dict(self.con.cursor().execute('SELECT type, id FROM Types').fetchall())
         self.roast_degree.addItems(self.roast_degrees.keys())
